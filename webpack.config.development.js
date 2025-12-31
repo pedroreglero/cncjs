@@ -130,6 +130,14 @@ module.exports = {
         options: {
           esModule: false
         }
+      },
+      {
+        test: /\.(wav|mp3|ogg)$/,
+        loader: 'file-loader',
+        options: {
+          name: 'assets/[name].[hash:8].[ext]',
+          esModule: false
+        }
       }
     ].filter(Boolean)
   },

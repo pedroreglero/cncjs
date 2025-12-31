@@ -1,11 +1,14 @@
 class GrblLineParserResultOk {
   static parse(line) {
-    const r = line.match(/^ok$/);
+    // Match "ok" or "ok N<linenumber>" (some firmware includes line numbers)
+    const r = line.match(/^ok(?:\s+N\d+)?$/);
     if (!r) {
       return null;
     }
 
-    const payload = {};
+    const payload = {
+      raw: line
+    };
 
     return {
       type: GrblLineParserResultOk,

@@ -459,6 +459,11 @@ class GrblController {
           return;
         }
 
+        if (this.runner.isAlarm()) {
+          log.warn('Stopped sending G-code commands in Alarm mode');
+          return;
+        }
+
         if (this.workflow.state === WORKFLOW_STATE_IDLE) {
           log.error(`Unexpected workflow state: ${this.workflow.state}`);
           return;
@@ -564,8 +569,10 @@ class GrblController {
           }
 
           // Deduct the receive buffer length to prevent from buffer overrun
-          const bufferSize = (rx - 8); // TODO
-          if (bufferSize > this.sender.sp.bufferSize) {
+          // Cap at 256 bytes max to prevent issues with incorrect rx values
+          const MAX_BUFFER_SIZE = 256;
+          const bufferSize = Math.min((rx - 8), MAX_BUFFER_SIZE);
+          if (bufferSize > this.sender.sp.bufferSize && bufferSize <= MAX_BUFFER_SIZE) {
             this.sender.sp.bufferSize = bufferSize;
           }
         }
@@ -674,11 +681,34 @@ class GrblController {
           // Grbl v0.9
           this.emit('serialport:read', res.raw);
         }
+
+        // Stop the workflow when an alarm occurs during G-code execution
+        if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+          const { lines, sent } = this.sender.state;
+          const line = ensureString(lines[sent - 1]).trim();
+          const ln = sent;
+
+          log.error(`Alarm triggered during G-code execution: line=${line}, ln=${ln}`);
+          this.emit('serialport:read', `> ${line} (ln=${ln})`);
+
+          const alarmMessage = alarm
+            ? `ALARM:${code} (${alarm.message})`
+            : res.raw;
+
+          this.workflow.pause({
+            err: true,
+            msg: alarmMessage,
+          });
+        }
       });
 
       this.runner.on('parserstate', (res) => {
+        // Only expect an ok response if we actually requested the parser state
+        // Some firmwares send [GC:...] unsolicited as part of status reports
+        if (this.actionMask.queryParserState.state) {
+          this.actionMask.queryParserState.reply = true;
+        }
         this.actionMask.queryParserState.state = false;
-        this.actionMask.queryParserState.reply = true;
 
         if (this.actionMask.replyParserState) {
           this.emit('serialport:read', res.raw);
