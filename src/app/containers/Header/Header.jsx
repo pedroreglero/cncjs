@@ -275,7 +275,8 @@ class Header extends PureComponent {
         inverse
         style={{
           border: 'none',
-          margin: 0
+          margin: 0,
+          top: 24
         }}
       >
         <Navbar.Header>

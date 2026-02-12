@@ -1,9 +1,26 @@
 @import "variables";
 
+.customBuildBanner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $banner-height;
+    background-color: #e67e22;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-align: center;
+    line-height: $banner-height;
+    z-index: 1100;
+    text-transform: uppercase;
+}
+
 .sidebar {
     background-color: $sidebar-background-color;
     position: fixed;
-    top: $navbar-height;
+    top: ($navbar-height + $banner-height);
     left: 0;
     bottom: 0;
     width: $sidebar-width;
@@ -12,7 +29,7 @@
 
 .main {
     position: absolute;
-    top: $navbar-height;
+    top: ($navbar-height + $banner-height);
     left: $sidebar-width;
     right: 0;
     bottom: 0;
