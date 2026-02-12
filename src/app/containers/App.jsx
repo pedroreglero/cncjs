@@ -44,9 +44,6 @@ class App extends PureComponent {
 
       return (
         <div>
-          <div className={styles.customBuildBanner}>
-            Custom CNCjs Build
-          </div>
           <Header {...this.props} />
           <aside className={styles.sidebar} id="sidebar">
             <Sidebar {...this.props} />

@@ -275,8 +275,7 @@ class Header extends PureComponent {
         inverse
         style={{
           border: 'none',
-          margin: 0,
-          top: 24
+          margin: 0
         }}
       >
         <Navbar.Header>
@@ -330,6 +329,19 @@ class Header extends PureComponent {
           </Tooltip>
           <Navbar.Toggle />
         </Navbar.Header>
+        <span
+          style={{
+            color: '#e67e22',
+            fontSize: '12px',
+            fontWeight: 600,
+            letterSpacing: '0.5px',
+            textTransform: 'uppercase',
+            lineHeight: '50px',
+            marginLeft: '4px',
+          }}
+        >
+          Custom Build
+        </span>
         <Navbar.Collapse>
           <div
             style={{
