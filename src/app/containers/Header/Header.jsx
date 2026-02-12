@@ -327,21 +327,22 @@ class Header extends PureComponent {
               )}
             </Anchor>
           </Tooltip>
+          <span
+            style={{
+              color: '#e67e22',
+              fontSize: '12px',
+              fontWeight: 600,
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
+              lineHeight: '50px',
+              float: 'left',
+              marginLeft: '4px',
+            }}
+          >
+            Custom Build
+          </span>
           <Navbar.Toggle />
         </Navbar.Header>
-        <span
-          style={{
-            color: '#e67e22',
-            fontSize: '12px',
-            fontWeight: 600,
-            letterSpacing: '0.5px',
-            textTransform: 'uppercase',
-            lineHeight: '50px',
-            marginLeft: '4px',
-          }}
-        >
-          Custom Build
-        </span>
         <Navbar.Collapse>
           <div
             style={{
