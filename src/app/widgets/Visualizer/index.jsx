@@ -18,6 +18,7 @@ import log from 'app/lib/log';
 import portal from 'app/lib/portal';
 import * as WebGL from 'app/lib/three/WebGL';
 import { in2mm } from 'app/lib/units';
+import jobCompleteSoundFile from 'app/assets/sounds/job-complete.wav';
 import WidgetConfig from '../WidgetConfig';
 import PrimaryToolbar from './PrimaryToolbar';
 import SecondaryToolbar from './SecondaryToolbar';
@@ -62,6 +63,15 @@ import {
   NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE
 } from './constants';
 import styles from './index.styl';
+
+const playJobCompleteSound = () => {
+  try {
+    const audio = new Audio(jobCompleteSoundFile);
+    audio.play();
+  } catch (err) {
+    log.error('Failed to play job complete sound:', err);
+  }
+};
 
 const translateExpression = (function() {
   const { Parser } = ExpressionEvaluator;
@@ -670,6 +680,12 @@ class VisualizerWidget extends PureComponent {
         }));
       },
       'workflow:state': (workflowState) => {
+        const previousState = this.state.workflow.state;
+
+        if (previousState === WORKFLOW_STATE_RUNNING && workflowState === WORKFLOW_STATE_IDLE) {
+          playJobCompleteSound();
+        }
+
         this.setState(state => ({
           workflow: {
             ...state.workflow,
